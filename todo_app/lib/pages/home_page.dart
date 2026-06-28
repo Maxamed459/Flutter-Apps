@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:todo_app/data/todoDatabase.dart';
 import 'package:todo_app/widgets/dialog_box.dart';
 import 'package:todo_app/widgets/todo_tile.dart';
 
@@ -12,15 +14,25 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _controller = TextEditingController();
 
-  List tasks = [
-    ["Code 1 hour every day", false],
-    ["Sleep at 10:00PM", true],
-  ];
+  final _box = Hive.box('todoBox');
+
+  Tododatabase _db = Tododatabase();
+
+  @override
+  void initState() {
+    if (_box.get('TODOLIST') == null) {
+      _db.createInitData();
+    } else {
+      _db.loadData();
+    }
+    super.initState();
+  }
 
   void checkboxChanged(bool? value, int index) {
     setState(() {
-      tasks[index][1] = !tasks[index][1];
+      _db.tasks[index][1] = !_db.tasks[index][1];
     });
+    _db.updateData();
   }
 
   void createNewTAsk() {
@@ -38,16 +50,18 @@ class _HomePageState extends State<HomePage> {
 
   void onSave() {
     setState(() {
-      tasks.add([_controller.text, false]);
+      _db.tasks.add([_controller.text, false]);
       _controller.clear();
     });
     Navigator.of(context).pop();
+    _db.updateData();
   }
 
   void deleteTask(int index) {
     setState(() {
-      tasks.removeAt(index);
+      _db.tasks.removeAt(index);
     });
+    _db.updateData();
   }
 
   @override
@@ -62,11 +76,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: ListView.builder(
-        itemCount: tasks.length,
+        itemCount: _db.tasks.length,
         itemBuilder: (context, index) {
           return TodoTile(
-            taskTitle: tasks[index][0],
-            taskCompleted: tasks[index][1],
+            taskTitle: _db.tasks[index][0],
+            taskCompleted: _db.tasks[index][1],
             onChanged: (value) => checkboxChanged(value, index),
             onDelete: (context) => deleteTask(index),
           );
