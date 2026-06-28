@@ -1,4 +1,4 @@
-# 🦋 Flutter Practice Apps
+# Flutter Practice Apps
 
 This repository is my personal Flutter practice space.
 
