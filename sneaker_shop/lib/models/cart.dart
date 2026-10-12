@@ -3,7 +3,7 @@ import 'package:sneaker_shop/models/shoe.dart';
 
 class Cart extends GetxController {
   // list of shoe's
-  List<Shoe> shoeShop = [
+  RxList<Shoe> shoeShop = [
     Shoe(
       name: 'Zoom Freak',
       price: '99.99',
@@ -39,6 +39,13 @@ class Cart extends GetxController {
       description:
           'A retro-inspired low-top sneaker perfect for everyday casual wear.',
     ),
+    Shoe(
+      name: 'Air Zoom',
+      price: '129.99',
+      imagePath: 'assets/images/6.jpg',
+      description:
+          'Classic air cushioning meets modern street style for all-day comfort.',
+    ),
   ].obs;
 
   // list of items in user cart
@@ -51,7 +58,7 @@ class Cart extends GetxController {
 
   // get cart
   List<Shoe> getUsercart() {
-    return shoeShop;
+    return userCart;
   }
 
   // add items to cart
@@ -60,7 +67,7 @@ class Cart extends GetxController {
   }
 
   // remove items from the cart
-  void removeItemFromCart(Shoe shoe) {
+  void removeItem(Shoe shoe) {
     userCart.remove(shoe);
   }
 }
